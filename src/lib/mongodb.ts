@@ -5,26 +5,29 @@ import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI as string;
 
-if (!uri) {
-  throw new Error(".env dosyasında MONGODB_URI tanımlı değil");
-}
-
 const globalWithMongo = globalThis as typeof globalThis & {
   _mongoClient?: MongoClient;
 };
 
 let client: MongoClient;
 
-if (process.env.NODE_ENV === "development") {
-  if (!globalWithMongo._mongoClient) {
-    globalWithMongo._mongoClient = new MongoClient(uri);
-  }
-  client = globalWithMongo._mongoClient;
-} else {
-  client = new MongoClient(uri);
-}
-
 export async function getDb() {
-  await client.connect();
-  return client.db(); // URI'deki veritabanı adını kullanır (precision_inventory)
+  if (!uri) {
+    throw new Error(".env dosyasında MONGODB_URI tanımlı değil. Vercel Environment Variables kısmına MONGODB_URI değerinizi eklemelisiniz.");
+  }
+
+  if (process.env.NODE_ENV === "development") {
+    if (!globalWithMongo._mongoClient) {
+      globalWithMongo._mongoClient = new MongoClient(uri);
+      await globalWithMongo._mongoClient.connect();
+    }
+    client = globalWithMongo._mongoClient;
+  } else {
+    if (!client) {
+      client = new MongoClient(uri);
+      await client.connect();
+    }
+  }
+
+  return client.db(); 
 }
