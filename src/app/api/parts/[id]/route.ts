@@ -30,9 +30,9 @@ export async function PUT(request: Request, { params }: RouteContext) {
       .updateOne({ _id: new ObjectId(id) }, { $set: update });
 
     return NextResponse.json({ id, ...update });
-  } catch (error) {
-    console.error("Update error:", error);
-    return NextResponse.json({ error: "Güncellenemedi" }, { status: 500 });
+  } catch (error: any) {
+    console.error("DEBUG PUT ERROR:", error);
+    return NextResponse.json({ error: "Güncellenemedi", detail: error.message }, { status: 500 });
   }
 }
 
@@ -47,8 +47,8 @@ export async function DELETE(request: Request, { params }: RouteContext) {
       .deleteOne({ _id: new ObjectId(id) });
 
     return new NextResponse(null, { status: 204 });
-  } catch (error) {
-    console.error("Delete error:", error);
-    return NextResponse.json({ error: "Silinemedi" }, { status: 500 });
+  } catch (error: any) {
+    console.error("DEBUG DELETE ERROR:", error);
+    return NextResponse.json({ error: "Silinemedi", detail: error.message }, { status: 500 });
   }
 }

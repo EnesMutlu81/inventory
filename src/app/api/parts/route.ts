@@ -50,7 +50,8 @@ export async function POST(request: Request) {
       { id: result.insertedId.toString(), ...doc },
       { status: 201 }
     );
-  } catch {
-    return NextResponse.json({ error: "Parça eklenemedi" }, { status: 500 });
+  } catch (error: any) {
+    console.error("DEBUG POST ERROR:", error);
+    return NextResponse.json({ error: "Parça eklenemedi", detail: error.message }, { status: 500 });
   }
 }
