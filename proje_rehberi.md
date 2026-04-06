@@ -139,3 +139,20 @@ const doc = {
 ```
 
 Bu 4 adımı uyguladığınızda, uygulamanızı en derinden en yüzeye (Veritabanı ↔ Backend ↔ Frontend ↔ Görsellik) kadar kusursuz manipüle etmiş olursunuz!
+
+---
+
+## 6. Sık Karşılaşılan Canlı Yayın (Vercel & Atlas) Ayarları
+
+Geliştirme esnasında `.env` ile MongoDB'ye bağlandıktan sonra, siteyi Vercel'a yüklediğinizde şu iki can alıcı detayı unutmamalısınız:
+
+### A) Vercel Environment Variables
+Vercel `.env` dosyanızı GitHub'dan çekmez. Bu sebeple MongoDB bağlantı şifrenizi her zaman Vercel panelinden de eklemelisiniz.
+**(Vercel > Settings > Environment Variables > MONGODB_URI)**
+
+### B) Atlas IP Whitelist & Özel Karakterler
+Vercel sunucularından gelen isteklere Atlas'ın izin vermesi için `Network Access` sekmesinde `0.0.0.0/0` (Allow Access From Anywhere) izninin olması şarttır. Ayrıca şifrenizde geçen `@` işaretleri, URI formatını bozmaması adına `%40` gibi karakterlere URL-Encoded olarak çevrilerek yazılmalıdır.
+
+### C) Önizleme Linki ve Authentication Koruması
+Vercel bazen (URL içinde `git-main` geçen) önizleme linklerini herkese açık yapmaz. Test için girildiğinde Vercel hesabı(login) ister.
+Bunu aşmak için projenin Vercel'deki **"Deployments"** veya **"Settings > Deployment Protection"** ayarından **"Vercel Authentication"** özelliğini kapatabilir veya projenin en kısa "Production URL" ana linkini kullanabilirsiniz.
